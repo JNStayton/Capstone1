@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>{{game.name}}</h3>
+<p>{{game.year_published}} | {{game.min_players}} - {{game.max_players}} Players | {{game.min_playtime}} - {{game.max_playtime}} Minutes</p>
+<hr>
+
+<div class="row text-center">
+    <div class="col-4">
+        <img src="{{game.image_url}}" alt="">
+    </div>
+    <div>
+        <p class="col-8">{{game.description_preview}}</p>
+    </div>
+</div>
+{% endblock %}

@@ -55,7 +55,7 @@ def get_category_names(games):
 def show_homepage():
     """Get game data from BGA based on its rank and display in groups of 12"""
 
-    resp = requests.get(f'{base_url}/search/?order_by=rank&limit=12&&client_id={client_id}')
+    resp = requests.get(f'{base_url}/search/?order_by=rank&limit=12&client_id={client_id}')
 
     json = resp.json()
     games = json['games']
@@ -63,3 +63,18 @@ def show_homepage():
     category_dict = get_category_names(games)
 
     return render_template('home.html', games=games, category_dict=category_dict)
+
+
+@app.route('/games/<game_id>')
+def show_game_page(game_id):
+    """Show info page for individual game"""
+    
+    resp = requests.get(f'{base_url}/search/?ids={game_id}&client_id={client_id}')
+
+    json = resp.json()
+    games=json['games']
+    
+    category_dict = get_category_names(games)
+    game = games[0]
+
+    return render_template('game_page.html', game=game, category_dict=category_dict)
