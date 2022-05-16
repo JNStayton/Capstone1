@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash, jsonify
 import requests
 from models import db, connect_db, Category
+from sqlalchemy.sql import text
 
 app = Flask(__name__)
 
@@ -52,6 +53,10 @@ def get_category_names(games):
 ############################################################################################
 
 @app.route('/')
+def home():
+    return redirect('/top_games')
+
+@app.route('/top_games')
 def show_homepage():
     """Get game data from BGA based on its rank and display in groups of 12"""
 
@@ -62,7 +67,49 @@ def show_homepage():
 
     category_dict = get_category_names(games)
 
-    return render_template('home.html', games=games, category_dict=category_dict)
+    return render_template('search_results.html', games=games, category_dict=category_dict, type='Rated')
+
+
+@app.route('/games/<category_name>')
+def show_games_in_category(category_name):
+    """Show top 12 games in a specific category"""
+
+    category = Category.query.filter_by(name=category_name).first()
+    
+    resp = requests.get(f'{base_url}/search/?categories={category.id}&limit=12&order_by=rank&client_id={client_id}')
+
+    json = resp.json()
+    games = json['games']
+
+    category_dict = get_category_names(games)
+
+    return render_template('search_results.html', games=games, category_dict=category_dict, type=category_name)
+
+
+@app.route('/games/player_count_<int:num>')
+def show_games_by_player_count(num):
+    """Show top ranked games based on minimum number of players"""
+
+    resp = requests.get(f'{base_url}/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}')
+    json = resp.json()
+    games = json['games']
+
+    category_dict = get_category_names(games)
+
+    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{num}+ Players')
+
+
+@app.route('/games/player_min_<int:min_num>&player_max_<int:max_num>')
+def show_games_by_player_range(min_num, max_num):
+    """Show top ranked games based on min and max player range"""
+
+    resp = requests.get(f'{base_url}/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}')
+    json = resp.json()
+    games = json['games']
+
+    category_dict = get_category_names(games)
+
+    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{min_num}-{max_num} Players')
 
 
 @app.route('/games/<game_id>')

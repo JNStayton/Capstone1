@@ -13,7 +13,17 @@
         <a class="navbar-brand" href="/">Duncan's Toy Chest</a>
           <ul class="navbar-nav mr-auto">
             <li class="nav-item d-none d-sm-block">
-              <a class="nav-link" href="#">Top Rated</a>
+              <a class="nav-link" href="/top_games">Top Rated</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Number of Players
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for num in range(5) %}
+                <a class="dropdown-item" href="/games/player_count_{{num+1}}">{{num+1}}+</a>
+                {% endfor %}
+              </div>
             </li>
           </ul>
           <form action="/api/cupcakes/find" id="search-form" method="POST" class="form-inline ">

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h2>Top Rated Games:</h2>
+<h2>Top {{type}} Games:</h2>
 <div id="container" class="row justify-content-center text-center">
 
     {% for game in games %}
@@ -18,11 +18,11 @@
                 <p>PRICE: <span class="badge badge-success">${{game.price}}</span></p>
                 <p>CATEGORIES: 
                     {% for category in category_dict.get(game.name) %}
-                        <span class="badge badge-primary"> {{category}} </span>
+                        <a href="/games/{{category}}"><span class="badge badge-primary">{{category}}</span></a>
                     {% endfor %}
                 </p>
                 <p>INFO: 
-                    <span class="badge badge-warning">{{game.min_players}}-{{game.max_players}} Players</span>
+                    <a href="/games/player_min_{{game.min_players}}&player_max_{{game.max_players}}"><span class="badge badge-warning">{{game.min_players}}-{{game.max_players}} Players</span></a>
                     <span class="badge badge-info">{{game.min_age}} Years and Up</span>
                     <span class="badge badge-dark">{{game.min_playtime}}-{{game.max_playtime}} Minutes</span>
                 </p>
