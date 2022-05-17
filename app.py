@@ -161,3 +161,9 @@ def show_game_page(game_id):
     game = games[0]
 
     return render_template('game_page.html', game=game, category_dict=category_dict)
+
+
+############################################################################################
+# LOGIN / LOGOUT ROUTES
+############################################################################################
+
