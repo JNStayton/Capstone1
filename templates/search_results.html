@@ -10,7 +10,7 @@
     {% for game in games %}
     <div class="card col-lg-3 col-md-4 col-sm-6">
         <div class="card-header bg-transparent">
-            <a href="/games/{{game.id}}" class="view">{{game.name.upper()}}</a>
+            <a href="/games/game/{{game.id}}" class="view"><b>{{game.name.upper()}}</b></a>
         </div>
         <i class="fa-regular fa-heart" style="position: absolute; top: 5px; right: 5px; font-size: 2rem;"></i>
             <img src="{{game.image_url}}" class="card-img-top" style="height: 15rem; object-fit: cover;"alt="A picture of {{game.name}}">

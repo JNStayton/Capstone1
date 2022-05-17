@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, session, flash, jsonify
+from flask import Flask, render_template, redirect, request, g, flash
 import requests
 from models import db, connect_db, Category
-from sqlalchemy.sql import text
+
+CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
@@ -48,23 +49,37 @@ def get_category_names(games):
     return category_dict
     
 
+def main_request(base_url, endpoint, x):
+    """function to cut down on repetition; 
+    receives a base url and the endpoint for that url, 
+    returns resp obj"""
+    resp = requests.get(base_url + endpoint + f'&skip={x}')
+    return resp
+
+
+def parse_resp(resp):
+    """parses the resp as JSON, 
+    and returns the games object from the parsed resp"""
+    json = resp.json()
+    games = json['games']
+    return games
+
+
+def get_count_of_resp(resp):
+    """Return the number of game objects in the response"""
+    json = resp.json()
+    return json['count']
+
 ############################################################################################
-# ROUTES
+# SEARCH ROUTES
 ############################################################################################
 
-@app.route('/')
-def home():
-    return redirect('/top_games')
-
-@app.route('/top_games')
+@app.route('/games/top_games')
 def show_homepage():
     """Get game data from BGA based on its rank and display in groups of 12"""
 
-    resp = requests.get(f'{base_url}/search/?order_by=rank&limit=12&client_id={client_id}')
-
-    json = resp.json()
-    games = json['games']
-
+    games = parse_resp(main_request(base_url, f'/search/?order_by=rank&limit=12&client_id={client_id}', 0))
+    
     category_dict = get_category_names(games)
 
     return render_template('search_results.html', games=games, category_dict=category_dict, type='Rated')
@@ -76,11 +91,14 @@ def show_games_in_category(category_name):
 
     category = Category.query.filter_by(name=category_name).first()
     
-    resp = requests.get(f'{base_url}/search/?categories={category.id}&limit=12&order_by=rank&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?categories={category.id}&limit=12&order_by=rank&client_id={client_id}', 0)
 
-    json = resp.json()
-    games = json['games']
+    ### working here on maybe paginating search results?
+    print(get_count_of_resp(resp))
+    for x in range(get_count_of_resp(resp)):
+        print(x)
 
+    games = parse_resp(resp)
     category_dict = get_category_names(games)
 
     return render_template('search_results.html', games=games, category_dict=category_dict, type=category_name)
@@ -90,9 +108,7 @@ def show_games_in_category(category_name):
 def show_games_by_player_count(num):
     """Show top ranked games based on minimum number of players"""
 
-    resp = requests.get(f'{base_url}/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}')
-    json = resp.json()
-    games = json['games']
+    games = parse_resp(main_request(base_url, f'/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}'))
 
     category_dict = get_category_names(games)
 
@@ -103,23 +119,43 @@ def show_games_by_player_count(num):
 def show_games_by_player_range(min_num, max_num):
     """Show top ranked games based on min and max player range"""
 
-    resp = requests.get(f'{base_url}/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}')
-    json = resp.json()
-    games = json['games']
+    games = parse_resp(main_request(base_url, f'/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}'))
 
     category_dict = get_category_names(games)
 
     return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{min_num}-{max_num} Players')
 
 
-@app.route('/games/<game_id>')
+@app.route('/games/name')
+def search_games_by_name():
+
+    query = request.args.get('query')
+
+    if query == '':
+        games = parse_resp(main_request(base_url, f'/search?limit=12&client_id={client_id}', 0))
+    else:
+        games = parse_resp(main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit=12&client_id={client_id}', 0))
+    
+    category_dict = get_category_names(games)
+
+    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{query}')
+
+
+############################################################################################
+# DISPLAY ROUTES
+############################################################################################
+@app.route('/')
+def home():
+    """If not logged in, render login page;
+    if logged in, redirect to /top_games"""
+    return redirect('/games/top_games')
+
+
+@app.route('/games/game/<game_id>')
 def show_game_page(game_id):
     """Show info page for individual game"""
     
-    resp = requests.get(f'{base_url}/search/?ids={game_id}&client_id={client_id}')
-
-    json = resp.json()
-    games=json['games']
+    games = parse_resp(main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}'))
     
     category_dict = get_category_names(games)
     game = games[0]
