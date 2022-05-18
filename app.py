@@ -1,8 +1,10 @@
-from flask import Flask, render_template, redirect, request, g, flash
+from flask import Flask, render_template, redirect, request, g, session, flash
 import requests
-from models import db, connect_db, Category
+from models import db, connect_db, Category, User
+from forms import NewUser, LoginForm
+from sqlalchemy.exc import IntegrityError
 
-CURR_USER_KEY = "curr_user"
+CURR_USER = "curr_user"
 
 app = Flask(__name__)
 
@@ -108,7 +110,7 @@ def show_games_in_category(category_name):
 def show_games_by_player_count(num):
     """Show top ranked games based on minimum number of players"""
 
-    games = parse_resp(main_request(base_url, f'/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}'))
+    games = parse_resp(main_request(base_url, f'/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}', 0))
 
     category_dict = get_category_names(games)
 
@@ -119,7 +121,7 @@ def show_games_by_player_count(num):
 def show_games_by_player_range(min_num, max_num):
     """Show top ranked games based on min and max player range"""
 
-    games = parse_resp(main_request(base_url, f'/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}'))
+    games = parse_resp(main_request(base_url, f'/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}', 0))
 
     category_dict = get_category_names(games)
 
@@ -155,7 +157,7 @@ def home():
 def show_game_page(game_id):
     """Show info page for individual game"""
     
-    games = parse_resp(main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}'))
+    games = parse_resp(main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}', 0))
     
     category_dict = get_category_names(games)
     game = games[0]
@@ -164,6 +166,61 @@ def show_game_page(game_id):
 
 
 ############################################################################################
-# LOGIN / LOGOUT ROUTES
+# LOGIN / LOGOUT and AUTHENTICATION ROUTES
 ############################################################################################
+
+@app.before_request
+def add_user_to_g():
+    """If the user is logged in, add them to g"""
+
+    if CURR_USER in session:
+        g.user = User.query.get(session[CURR_USER])
+    else:
+        g.user = None
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def signup():
+    """Handle user registration; create user and add to DB, then redirect to home page"""
+
+    form = NewUser()
+
+    if form.validate_on_submit():
+            user = User.register(
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data
+            )
+            db.session.commit()
+            # add new user to g, and set session
+            session[CURR_USER] = user.id
+            return redirect('/games/top_games')
+
+    else:
+        return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_user():
+    """Login a registered user"""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(form.username.data, form.password.data)
+
+        if user:
+            session[CURR_USER] = user.id
+            return redirect('/games/top_games')
+
+    return render_template('login_user.html', form=form)
+
+
+@app.route('/logout')
+def logout_user():
+    """Logout a registered user"""
+    if CURR_USER in session:
+        del session[CURR_USER]
+    
+    return redirect('/games/top_games')
 

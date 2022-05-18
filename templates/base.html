@@ -11,11 +11,20 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/">Duncan's Toy Chest</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item d-none d-lg-block">
+            {% if g.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="/games/favorites">My Favorites</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
               <a class="nav-link" href="/top_games">Top Rated</a>
             </li>
-            <li class="nav-item d-none d-lg-block dropdown">
+            <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Number of Players
               </a>
@@ -36,12 +45,29 @@
               </form>
             </li>
           </ul>
-      </nav>
-    <div class="container">
-    {% block content %}
+          <ul class="navbar-nav ml-auto">
+            {% if not g.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            {% endif %}
+            {% if g.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </nav>
+  <div class="container">
+{% block content %}
 
-    {% endblock %}
-    </div>
+{% endblock %}
+</div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
