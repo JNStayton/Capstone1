@@ -72,6 +72,13 @@ def get_count_of_resp(resp):
     json = resp.json()
     return json['count']
 
+def get_likes(user):
+    if user:
+        likes = user.liked_games
+        return [game.game_id for game in likes]
+    else:
+        return []
+
 ############################################################################################
 # SEARCH ROUTES
 ############################################################################################
@@ -84,8 +91,7 @@ def show_homepage():
     
     category_dict = get_category_names(games)
 
-    likes = g.user.liked_games
-    game_ids_list = [game.game_id for game in likes]
+    game_ids_list = get_likes(g.user)
 
     return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
 
@@ -105,8 +111,9 @@ def show_games_in_category(category_name):
 
     games = parse_resp(resp)
     category_dict = get_category_names(games)
+    game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, type=category_name)
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
 
 
 @app.route('/games/player_count_<int:num>')
@@ -116,8 +123,9 @@ def show_games_by_player_count(num):
     games = parse_resp(main_request(base_url, f'/search/?min_players={num}&order_by=rank&limit=12&client_id={client_id}', 0))
 
     category_dict = get_category_names(games)
+    game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{num}+ Players')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{num}+ Players')
 
 
 @app.route('/games/player_min_<int:min_num>&player_max_<int:max_num>')
@@ -127,8 +135,9 @@ def show_games_by_player_range(min_num, max_num):
     games = parse_resp(main_request(base_url, f'/search/?min_players={min_num}&max_players={max_num}&limit=12&order_by=rank&client_id={client_id}', 0))
 
     category_dict = get_category_names(games)
+    game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{min_num}-{max_num} Players')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{min_num}-{max_num} Players')
 
 
 @app.route('/games/name')
@@ -142,8 +151,9 @@ def search_games_by_name():
         games = parse_resp(main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit=12&client_id={client_id}', 0))
     
     category_dict = get_category_names(games)
+    game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, type=f'{query}')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{query}')
 
 
 ############################################################################################
@@ -172,7 +182,7 @@ def show_game_page(game_id):
 def show_user_page(user_id):
     user = User.query.get_or_404(user_id)
 
-    game_ids_list = [game.game_id for game in user.liked_games]
+    game_ids_list = get_likes(user)
 
     game_ids = ','.join([str(id) for id in game_ids_list])
 
@@ -192,8 +202,7 @@ def like_game(game_id):
     game = games[0]
     game_id = game['id']
 
-    likes = g.user.liked_games
-    game_ids_list = [game.game_id for game in likes]
+    game_ids_list = get_likes(g.user)
 
     if game_id in game_ids_list:
         Like.query.filter_by(game_id=game_id, user_id=g.user.id).delete()
