@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, request, g, session, flash
 import requests
-from models import db, connect_db, Category, User
+from models import db, connect_db, Category, User, Like
 from forms import NewUser, LoginForm
 from sqlalchemy.exc import IntegrityError
 
@@ -84,7 +84,10 @@ def show_homepage():
     
     category_dict = get_category_names(games)
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, type='Rated')
+    likes = g.user.liked_games
+    game_ids_list = [game.game_id for game in likes]
+
+    return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
 
 
 @app.route('/games/<category_name>')
@@ -163,6 +166,44 @@ def show_game_page(game_id):
     game = games[0]
 
     return render_template('game_page.html', game=game, category_dict=category_dict)
+
+
+@app.route('/users/profile/<int:user_id>')
+def show_user_page(user_id):
+    user = User.query.get_or_404(user_id)
+
+    game_ids_list = [game.game_id for game in user.liked_games]
+
+    game_ids = ','.join([str(id) for id in game_ids_list])
+
+    games = parse_resp(main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}', 0))
+
+    return render_template('show_user.html', user=user, games=games)
+
+
+@app.route('/users/like_game/<game_id>', methods=["POST"])
+def like_game(game_id):
+    """Logged in user may like or unlike a game"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    games = parse_resp(main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}', 0))
+    game = games[0]
+    game_id = game['id']
+
+    likes = g.user.liked_games
+    game_ids_list = [game.game_id for game in likes]
+
+    if game_id in game_ids_list:
+        Like.query.filter_by(game_id=game_id, user_id=g.user.id).delete()
+    else:
+        liked_game = Like(user_id=g.user.id, game_id=game_id)
+        db.session.add(liked_game)
+
+    db.session.commit()
+
+    return redirect(f'/users/profile/{g.user.id}')
 
 
 ############################################################################################

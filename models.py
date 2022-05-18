@@ -22,14 +22,14 @@ class Category(db.Model):
     name = db.Column(db.String)
 
 
-class Likes(db.Model):
+class Like(db.Model):
     """Mapping user likes to API game IDs"""
 
     __tablename__ = 'likes'
-    
+
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
     game_id = db.Column(db.String, nullable=False)
 
@@ -41,13 +41,13 @@ class Review(db.Model):
 
     id = db.Column(db.Integer, primary_key=True,)
 
+    title = db.Column(db.String(75), nullable=False)
+
     text = db.Column(db.String(500), nullable=False,)
 
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-
-    user = db.relationship('User')
 
 
 class User(db.Model):
@@ -63,7 +63,7 @@ class User(db.Model):
 
     password = db.Column(db.Text, nullable=False)
 
-    liked_games = db.relationship("Likes")
+    liked_games = db.relationship('Like', backref='user')
 
     game_reviews = db.relationship("Review")
 

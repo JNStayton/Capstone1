@@ -10,9 +10,20 @@
     {% for game in games %}
     <div class="card col-lg-3 col-md-4 col-sm-6">
         <div class="card-header bg-transparent">
-            <a href="/games/game/{{game.id}}" class="view"><b>{{game.name.upper()}}</b></a>
+            <a href="/games/game/{{game.id}}" class="view d-inline"><b>{{game.name.upper()}}</b></a>
+            {% if g.user %}
+            <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="messages-form">
+                <button class="float-right btn btn-sm
+                  {% if game.id in game_ids_list %}
+                    btn-danger
+                  {% else %}
+                    btn-outline-dark
+                  {% endif %}">
+                  <i class="fa-regular fa-heart"></i> 
+                </button>
+              </form>
+            {% endif %}
         </div>
-        <i class="fa-regular fa-heart" style="position: absolute; top: 5px; right: 5px; font-size: 2rem;"></i>
             <img src="{{game.image_url}}" class="card-img-top" style="height: 15rem; object-fit: cover;"alt="A picture of {{game.name}}">
             <div data-id="{{game.id}}" class="card-body text-left">
                 <p>PRICE: <span class="badge badge-success">${{game.price}}</span></p>

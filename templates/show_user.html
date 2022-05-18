@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{user.username.capitalize()}}'s Profile</h2>
+
+<h4>{{user.username.capitalize()}}'s Favorite Games:</h4>
+{% for game in games %}
+<p>{{game.name}}</p>
+{% endfor %}
+
+{% endblock %}
