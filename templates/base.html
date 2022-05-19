@@ -18,7 +18,7 @@
           <ul class="navbar-nav mr-auto">
             {% if g.user %}
             <li class="nav-item">
-              <a class="nav-link" href="/games/favorites">My Favorites</a>
+              <a class="nav-link" href="/users/profile/{{g.user.id}}">My Profile</a>
             </li>
             {% endif %}
             <li class="nav-item">

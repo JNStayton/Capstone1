@@ -1,12 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container row">
+    <div class="my-2 card mb-3 col-lg-3">
+        <h2 class="my-2">{{user.username.capitalize()}}'s Profile</h2>
+        <h6 class="my-2">Email: {{user.email}}</h6>
+        <button class="btn btn-outline-success btn-lg btn-block">Edit Account Info</button>
+        <button class="btn btn-outline-danger btn-lg btn-block">Delete Account</button>
 
-<h2>{{user.username.capitalize()}}'s Profile</h2>
+        <h4 class="my-2">Latest Reviews:</h4>
+        <ul>
+        </ul>
+        <div class="mt-auto text-center">
+        <a href="/users/{{user.id}}/reviews"><span class="text-muted">See All Reviews</span></a>
+        </div>
+    </div>
 
-<h4>{{user.username.capitalize()}}'s Favorite Games:</h4>
-{% for game in games %}
-<p>{{game.name}}</p>
-{% endfor %}
+    <div class="my-2 card col-lg-9">
+        <h4 class="my-2">Favorite Games:</h4>
+    {% for game in games %}
+    <div class="card mb-3">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <a href="/games/game/{{game.id}}"><img src="{{game.image_url}}" class="card-img" style="max-height: 15vh; object-fit: cover;" alt="Image of game"></a>
+          </div>
+          <div class="col-9">
+            <div class="card-body">
+              <h5 class="card-title">{{game.name}}
+                {% if g.user %}
+                <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="messages-form">
+                    <button class="float-right btn btn-sm
+                    {% if game.id in game_ids_list %}
+                    btn-danger
+                    {% else %}
+                    btn-outline-dark
+                    {% endif %}">
+                    <i class="fa-regular fa-heart"></i> 
+                    </button>
+                </form>
+                </h5>
+                <p class="card-text"><small class="text-muted"><p>{{game.year_published}} | {{game.min_players}} - {{game.max_players}} Players | {{game.min_playtime}} - {{game.max_playtime}} Minutes</p></small></p>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
 
 {% endblock %}
+

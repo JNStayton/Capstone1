@@ -2,16 +2,65 @@
 
 {% block content %}
 
-<h3>{{game.name}}</h3>
-<p>{{game.year_published}} | {{game.min_players}} - {{game.max_players}} Players | {{game.min_playtime}} - {{game.max_playtime}} Minutes</p>
+<h3 class="my-2">{{game.name}}</h3>
+<p>{{game.year_published}} | {{game.min_players}} - {{game.max_players}} Players | {{game.min_playtime}} - {{game.max_playtime}} Minutes | <a href="#videos">Videos</a> | <a href="#reviews">Reviews</a></p>
 <hr>
 
-<div class="row text-center">
-    <div class="col-4">
-        <img src="{{game.image_url}}" alt="">
+<div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <a href="/games/game/{{game.id}}"><img src="{{game.image_url}}" class="card-img" style="max-height: 30vh; object-fit: cover;" alt="Image of game"></a>
+      </div>
+      <div class="col-9">
+        <div class="card-body">
+          <h5 class="card-title">{{game.name}} <span class="badge badge-success">${{game.price}}</span>
+            {% if g.user %}
+            <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="messages-form">
+                <button class="float-right btn btn-sm
+                {% if game.id in game_ids_list %}
+                btn-danger
+                {% else %}
+                btn-outline-dark
+                {% endif %}">
+                <i class="fa-regular fa-heart"></i> 
+                </button>
+            </form>
+            {% endif %}
+            </h5> 
+            <h6>{{game.primary_publisher.name}}</h6>
+            {% for category in category_dict.get(game.name) %}
+            <a href="/games/{{category}}"><span class="badge badge-primary">{{category}}</span></a>
+            {% endfor %}
+            <p class="card-text"><small class="text-muted"><p>{{game.description_preview}}</p></small></p>
+          </p>
+        </div>
+      </div>
     </div>
-    <div>
-        <p class="col-8">{{game.description_preview}}</p>
+  </div>
+
+
+<div id="videos">
+    <h3>Videos</h3>
+    <div class="video-container">
+        <div class="row text-center">
+            {% for video in videos %}
+            <div class="card col-5 m-2">
+                <iframe src="{{video[1]}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="card-footer bg-dark text-muted">{{video[0]}}</div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
+
+
+<div id="reviews">
+    <h3>Reviews</h3>
+    {% if g.user %}
+    <div>
+        {% include 'new_review.html' %}
+    </div>
+    {% endif %}
+</div>
+
 {% endblock %}

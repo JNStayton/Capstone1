@@ -1,0 +1,12 @@
+{% block content %}
+
+<h3>Leave Review for {{game.name}}</h3>
+
+<form action="/games/game/{{game.id}}" method="POST">
+    {% include 'form-template.html' %}
+    
+      <button class="btn btn-success" type="submit">Post Review</button>
+    
+    </form>
+
+{% endblock %}
