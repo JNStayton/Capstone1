@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="my-2">{{reviews[0].user_username.capitalize()}}'s Reviews</h3>
+
+{% for review in reviews %}
+
+<div class="card my-2">
+    <div class="card-header">
+        <b>{{review.title}}</b>         {%for game in games %}
+        {% if review.game_id == game.id %} 
+        <span class="text-muted">a review of </span><a href="/games/game/{{game.id}}">{{game.name}}</a>
+        {% endif %}
+    {% endfor %}
+    </div>
+    <div class="card-body">
+      <blockquote class="blockquote mb-0">
+        <p>{{review.text}}</p>
+        <footer class="blockquote-footer"><a href="/users/profile/{{review.user_username}}">{{review.user_username}}</a>, {{review.timestamp}}</footer>
+      </blockquote>
+    </div>
+    <div class="card-footer">
+        {% if g.user.username == review.user_username %}
+         <a class="btn btn-outline-success" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
+        <form style="display: inline;" action="/reviews/{{review.id}}/delete" method="POST">
+            <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+        </form>
+        {% endif %}
+    </div>
+  </div>
+
+{% endfor %}
+
+
+{% endblock %}

@@ -29,7 +29,7 @@ class Like(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE'))
 
     game_id = db.Column(db.String, nullable=False)
 
@@ -47,19 +47,19 @@ class Review(db.Model):
 
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    game_id = db.Column(db.String, nullable=False)
+
+    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE'), nullable=False)
 
 
 class User(db.Model):
     """Users in the db"""
 
     __tablename__ = 'users'
-    
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+
+    username = db.Column(db.String(20), unique=True, primary_key = True, nullable=False)
 
     email = db.Column(db.String, unique=True, nullable=False)
-
-    username = db.Column(db.String(20), unique=True, nullable=False)
 
     password = db.Column(db.Text, nullable=False)
 
