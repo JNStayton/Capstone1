@@ -428,7 +428,7 @@ def delete_user_account():
 def edit_review(review_id):
     """Edit review if authorized user"""
 
-    review = Review.query.get(review_id)
+    review = Review.query.get_or_404(review_id)
 
     form = ReviewForm(obj=review)
 
@@ -444,3 +444,21 @@ def edit_review(review_id):
         return redirect(f'/users/profile/{review.user_username}')
     
     return render_template('edit_review.html', form=form, review=review)
+
+
+@app.route('/reviews/<int:review_id>/delete', methods=['POST'])
+def delete_review(review_id):
+    """Delete review if authorized user"""
+
+    review = Review.query.get_or_404(review_id)
+
+    if review.user_username != g.user.username:
+        flash('Unathorized; that is not your review to delete.', 'danger')
+        redirect('/')
+
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted!', 'success')
+    return redirect('/')
+
+    
