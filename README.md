@@ -17,7 +17,7 @@ Run the following commands in the terminal to run the app:
 Be sure to register an account to see the full app!
 
 ### Playing with the App:
->>Be sure to register an account to see the full app!
+>Be sure to register an account to see the full app!
 
 **Basic User Schema:**
 - username (primary key)
@@ -44,7 +44,7 @@ Be sure to register an account to see the full app!
 4. The search bar will return query results for games loosely matching the search term in 'name'
 5. Login and Sign up will take you to the respective form pages, unless you are already logged in, in which case they'll bring you to the home page
 6. Clicking on a game's category (any category listed) will pull up the top 24 games in that category
-7. Clicking on a games player range (eg. `2-4 Players`) will return the top 24 games within that range of players
+7. Clicking on a games player range (eg. '2-4 Players') will return the top 24 games within that range of players
 8. Clicking on a game's name will bring up all the information for that game, including the game description, stats, top 6 youtube videos, and reviews in the PostgreSQL database. If user is logged in, it will also display a form to leave a review for that game.
 9. Clicking on the heart button for a game will add that game to the user's favorites list (note: this button is only available to logged in users)
 10. Clicking on 'My Profile' in the navbar, if logged in, will bring up the user's account profile, where user can see their list of favorited games, links to reviews they have posted, and optional buttons for edited and deleting their account.
