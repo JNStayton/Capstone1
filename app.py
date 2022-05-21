@@ -1,7 +1,11 @@
+import os
+
 from flask import Flask, render_template, redirect, request, g, session, flash
 import requests
+
 from models import db, connect_db, Category, User, Like, Review
 from forms import NewUser, LoginForm, ReviewForm, EditUserForm
+
 from helpers import get_game_categories, get_category_names, get_videos_for_game, fix_video_embed_link, get_images_for_game, main_request, get_likes, add_or_remove_like, get_reviews_by_game, get_reviews_by_user, get_latest_reviews_by_user, authorized
 
 
@@ -9,13 +13,20 @@ CURR_USER = "curr_user"
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///boardgames"
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///boardgames'))
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "keep it secret, keep it safe"
 
 connect_db(app)
 db.create_all()
+
+#if the categories table is empty, run get_game_categories to fetch the API categories data
+if db.session.query(Category).first() == None:
+    get_game_categories()
+
 
 base_url = 'https://api.boardgameatlas.com/api'
 client_id = 'Vk9QEJ2umU'
@@ -26,7 +37,7 @@ client_id = 'Vk9QEJ2umU'
 ############################################################################################
 
 @app.route('/games/top_games')
-def show_homepage():
+def show_top_games():
     """Get game data from BGA based on its rank and display in groups of 24"""
 
     games = main_request(base_url, f'/search/?order_by=rank&limit=24&client_id={client_id}')
@@ -161,25 +172,7 @@ def show_user_reviews(username):
     game_ids = ','.join([str(id) for id in game_ids_list])
     games = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
 
-    return render_template('all_reviews.html', reviews=reviews, games=games)
-
-
-@app.route('/users/like_game/<game_id>', methods=["POST"])
-def like_game(game_id):
-    """Logged in user may like or unlike a game"""
-    if authorized() == False:
-        return redirect("/")
-    
-    games = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
-    game_id = games[0]['id']
-
-    game_ids_list = get_likes(g.user)
-
-    add_or_remove_like(game_id, game_ids_list, g.user)
-
-    db.session.commit()
-
-    return redirect(request.referrer)
+    return render_template('all_reviews.html', reviews=reviews, games=games, user=user)
 
 
 ############################################################################################
@@ -339,4 +332,20 @@ def delete_review(review_id):
     flash('Review deleted!', 'success')
     return redirect('/')
 
+
+@app.route('/users/like_game/<game_id>', methods=["POST"])
+def like_game(game_id):
+    """Logged in user may like or unlike a game"""
+    if authorized() == False:
+        return redirect("/")
     
+    games = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
+    game_id = games[0]['id']
+
+    game_ids_list = get_likes(g.user)
+
+    add_or_remove_like(game_id, game_ids_list, g.user)
+
+    db.session.commit()
+
+    return redirect(request.referrer)

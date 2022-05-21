@@ -4,7 +4,7 @@ from sqlalchemy import exc
 
 from models import db, User, Review, Like
 
-os.environ['DATABASE_URL'] = "postgresql:///boardgames-test"
+os.environ['DATABASE_URL'] = "postgresql:///boardgames_test"
 
 from app import app
 

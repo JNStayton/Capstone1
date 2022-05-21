@@ -2,8 +2,9 @@
 
 {% block content %}
 
-<h3 class="my-2">{{reviews[0].user_username.capitalize()}}'s Reviews</h3>
+<h3 class="my-2">{{user.username.capitalize()}}'s Reviews</h3>
 
+{% if reviews %}
 {% for review in reviews %}
 
 <div class="card my-2">
@@ -31,6 +32,13 @@
   </div>
 
 {% endfor %}
+
+{% else  %}
+
+<p>{{user.username.capitalize()}} has not left any reviews!</p>
+
+{% endif %}
+
 
 
 {% endblock %}
