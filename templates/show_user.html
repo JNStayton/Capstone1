@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container row">
-    <div class="my-2 card mb-3 col-lg-3">
+    <div class="my-2 mr-2 card mb-3 col-lg-3" id="profile-card">
         <h2 class="my-2">{{user.username.capitalize()}}'s Profile</h2>
         {% if g.user.username == user.username %}
         <h6 class="my-2">Email: {{user.email}}</h6>
@@ -14,7 +14,7 @@
         <h4 class="my-2">Latest Reviews:</h4>
         <ul>
         {% for review in reviews %}
-            <li><a href="/games/game/{{review.game_id}}#reviews">{{review.title}}</a></li>
+            <li><b><a href="/games/game/{{review.game_id}}#reviews">{{review.title}}</a></b></li>
         {% endfor %}
         </ul>
         <div class="mt-auto text-center">
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="my-2 card col-lg-9">
+    <div id="container" class="my-2 card col-lg-8">
         <h4 class="my-2">Favorite Games:</h4>
     {% for game in games %}
     <div class="card mb-3">

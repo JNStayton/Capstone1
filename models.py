@@ -22,6 +22,7 @@ class Category(db.Model):
     name = db.Column(db.String)
 
 
+
 class Like(db.Model):
     """Mapping user likes to API game IDs"""
 
