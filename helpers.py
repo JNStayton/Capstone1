@@ -1,6 +1,8 @@
-from flask import Flask, g, flash
+from flask import g, flash, redirect
+from functools import wraps
 import requests
 from models import db, Category, Like, Review
+from sqlalchemy import desc
 
 base_url = 'https://api.boardgameatlas.com/api'
 client_id = 'Vk9QEJ2umU'
@@ -75,6 +77,7 @@ def main_request(base_url, endpoint):
 
 
 def get_likes(user):
+    """Retrieve liked game ids for a user"""
     if user:
         likes = user.liked_games
         return [game.game_id for game in likes]
@@ -83,6 +86,7 @@ def get_likes(user):
 
 
 def add_or_remove_like(game_id, game_ids_list, user):
+    """Function for adding or removing a liked game from db"""
     if game_id in game_ids_list:
         Like.query.filter_by(game_id=game_id, user_username=user.username).delete()
     else:
@@ -91,23 +95,28 @@ def add_or_remove_like(game_id, game_ids_list, user):
 
 
 def get_reviews_by_game(game_id):
+    """Returns all reviews made for a game by game ID"""
     reviews = Review.query.filter_by(game_id=game_id).all()
     return reviews
 
 
 def get_reviews_by_user(username):
+    """Returns all reviews made by a user"""
     reviews = Review.query.filter_by(user_username=username).all()
     return reviews
 
 
 def get_latest_reviews_by_user(username):
-    reviews = Review.query.filter_by(user_username=username).limit(10).all()
+    """Returns most recent 10 reviews made by a user"""
+    reviews = Review.query.filter_by(user_username=username).order_by(desc(Review.timestamp)).limit(10).all()
     return reviews
 
-
-def authorized():
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return False
-    else:
-        return
+def authorized(f):
+    """Decorator function for checking user authorization"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not g.user:
+            flash("Access unauthorized.", "danger")
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function

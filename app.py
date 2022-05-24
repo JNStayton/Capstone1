@@ -1,12 +1,11 @@
 import os
 
 from flask import Flask, render_template, redirect, request, g, session, flash
-import requests
 
-from models import db, connect_db, Category, User, Like, Review
+from models import db, connect_db, Category, User, Review
 from forms import NewUser, LoginForm, ReviewForm, EditUserForm
 
-from helpers import get_game_categories, get_category_names, get_videos_for_game, fix_video_embed_link, get_images_for_game, main_request, get_likes, add_or_remove_like, get_reviews_by_game, get_reviews_by_user, get_latest_reviews_by_user, authorized
+from helpers import get_game_categories, get_category_names, get_videos_for_game, fix_video_embed_link, main_request, get_likes, add_or_remove_like, get_reviews_by_game, get_reviews_by_user, get_latest_reviews_by_user, authorized
 
 
 CURR_USER = "curr_user"
@@ -30,7 +29,6 @@ if db.session.query(Category).first() == None:
 
 base_url = 'https://api.boardgameatlas.com/api'
 client_id = 'Vk9QEJ2umU'
-
 
 ############################################################################################
 # SEARCH ROUTES for API
@@ -100,7 +98,7 @@ def search_games_by_name():
     category_dict = get_category_names(games)
     game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{query}')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{query.capitalize()}')
 
 
 ############################################################################################
@@ -233,7 +231,7 @@ def signup():
 def login_user():
     """Login a registered user"""
     if g.user:
-        flash(f"You're already logged in, {g.user.username}!", 'warning')
+        flash(f"You're already logged in, {g.user.username.capitalize()}!", 'warning')
         return redirect('/')
 
     form = LoginForm()
@@ -263,10 +261,9 @@ def logout_user():
 
 
 @app.route('/users/edit', methods=['GET', 'POST'])
+@authorized
 def edit_user_profile():
     """Edit a user's account"""
-    if authorized() == False:
-        return redirect('/')
     
     user = User.query.get_or_404(g.user.username)
     form = EditUserForm(obj=user)
@@ -284,11 +281,9 @@ def edit_user_profile():
 
 
 @app.route('/users/delete', methods=['POST'])
+@authorized
 def delete_user_account():
     """Delete user account"""
-
-    if authorized() == False:
-        return redirect('/')
 
     db.session.delete(g.user)
     del session[CURR_USER]
@@ -299,6 +294,7 @@ def delete_user_account():
 
 
 @app.route('/reviews/<int:review_id>/edit', methods=['GET', 'POST'])
+@authorized
 def edit_review(review_id):
     """Edit review if authorized user"""
 
@@ -307,9 +303,9 @@ def edit_review(review_id):
     form = ReviewForm(obj=review)
 
     if review.user_username != g.user.username:
-        flash('Unathorized; that is not your review to edit.', 'danger')
-        redirect('/')
-    
+        flash('Unauthorized; that is not your review to edit.', 'danger')
+        return redirect(f'/users/profile/{g.user.username}')
+
     if form.validate_on_submit():
         review.title = form.title.data,
         review.text = form.text.data
@@ -322,14 +318,15 @@ def edit_review(review_id):
 
 
 @app.route('/reviews/<int:review_id>/delete', methods=['POST'])
+@authorized
 def delete_review(review_id):
     """Delete review if authorized user"""
 
     review = Review.query.get_or_404(review_id)
 
     if review.user_username != g.user.username:
-        flash('Unathorized; that is not your review to delete.', 'danger')
-        redirect('/')
+        flash('Unauthorized; that is not your review to delete.', 'danger')
+        return redirect(f'/users/profile/{g.user.username}')
 
     db.session.delete(review)
     db.session.commit()
@@ -338,10 +335,9 @@ def delete_review(review_id):
 
 
 @app.route('/users/like_game/<game_id>', methods=["POST"])
+@authorized
 def like_game(game_id):
     """Logged in user may like or unlike a game"""
-    if authorized() == False:
-        return redirect("/")
     
     games = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
     game_id = games[0]['id']

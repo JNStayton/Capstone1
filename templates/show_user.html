@@ -25,6 +25,7 @@
 
     <div id="container" class="my-2 card col-lg-8">
         <h4 class="my-2">Favorite Games:</h4>
+    {% if games %}
     {% for game in games %}
     <div class="card mb-3">
         <div class="row no-gutters">
@@ -54,6 +55,9 @@
         </div>
       </div>
       {% endfor %}
+      {% else %}
+      <p>{% if g.user.username == user.username %}You don't{% else %}{{user.username.capitalize()}} doesn't{% endif %} like any games yet!</p>
+      {% endif %}
 
 {% endblock %}
 
