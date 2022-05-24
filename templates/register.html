@@ -2,13 +2,14 @@
 
 {% block content %}
 
+<div class="container page-content my-4 p-2">
 <h3>Register With Us!</h3>
-
+<h6><em>Already have an account? <b><a href="/login">Log in!</a></b></em></h6>
 <form action="/register" method="POST">
     {% include 'form-template.html' %}
     
       <button class="btn btn-success" type="submit">Register</button>
     
     </form>
-
+</div>
 {% endblock %}

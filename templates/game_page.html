@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<div class="container page-content my-4 p-2">
 <h3 class="my-2">{{game.name}}</h3>
 <p>{{game.year_published}} | {{game.min_players}} - {{game.max_players}} Players | {{game.min_playtime}} - {{game.max_playtime}} Minutes | <a href="#videos">Videos</a> | <a href="#reviews">Reviews</a></p>
 <hr>
@@ -41,8 +41,9 @@
 
 <div id="videos">
     <h3>Videos</h3>
+    <hr>
     <div class="video-container">
-        <div class="row text-center">
+        <div class="row text-center justify-content-center">
             {% for video in videos %}
             <div class="card col-lg-5 m-2">
                 <iframe src="{{video[1]}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -55,6 +56,10 @@
 
 <div class="my-2" id="reviews">
     <h3>Reviews</h3>
+    <hr>
+    <div class="container">
+    {% if reviews %}
+    <h4>All Reviews</h4>
     {% for review in reviews %}
 
     <div class="card my-2">
@@ -62,29 +67,30 @@
             <b>{{review.title}}</b>
         </div>
         <div class="card-body">
-          <blockquote class="blockquote mb-0">
+          <blockquote class="blockquote text-muted mb-0" style="font-size: 16px">
             <p>{{review.text}}</p>
-            <footer class="blockquote-footer"><a href="/users/profile/{{review.user_username}}">{{review.user_username}}</a>, {{review.timestamp}}</footer>
+            <footer class="blockquote-footer float-right"><a href="/users/profile/{{review.user_username}}">{{review.user_username}}</a>, {{review.timestamp}}</footer>
           </blockquote>
         </div>
         <div class="card-footer">
             {% if g.user.username == review.user_username %}
-             <a class="btn btn-outline-success" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
             <form style="display: inline;" action="/reviews/{{review.id}}/delete" method="POST">
-                <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                <button class="btn btn-danger float-right"><i class="fa-solid fa-trash-can"></i></button>
             </form>
+            <a class="btn btn-outline-success float-right mx-2" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
             {% endif %}
         </div>
       </div>
 
     {% endfor %}
-
+    {% endif %}
     {% if g.user %}
     <div>
         {% include 'new_review.html' %}
     </div>
     {% endif %}
 
+</div>
 </div>
 </div>
 

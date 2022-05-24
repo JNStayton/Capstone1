@@ -2,7 +2,9 @@
 
 {% block content %}
 
+<div class="container page-content my-4 p-2">
 <h3>Login</h3>
+<h6><em>Don't have an account with us? <b><a href="/register">Sign up!</a></b></em></h6>
 
 <form action="/login" method="POST">
     {% include 'form-template.html' %}
@@ -10,5 +12,5 @@
       <button class="btn btn-success" type="submit">Login</button>
     
     </form>
-
+</div>
 {% endblock %}

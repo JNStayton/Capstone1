@@ -66,7 +66,7 @@ class User(db.Model):
 
     liked_games = db.relationship('Like', backref='user')
 
-    game_reviews = db.relationship("Review")
+    game_reviews = db.relationship("Review", cascade='all, delete')
 
     @classmethod
     def register(cls, username, email, password):

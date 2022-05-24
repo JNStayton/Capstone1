@@ -172,7 +172,13 @@ def show_user_reviews(username):
     game_ids = ','.join([str(id) for id in game_ids_list])
     games = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
 
-    return render_template('all_reviews.html', reviews=reviews, games=games, user=user)
+    game_names = []
+    for game in games:
+        game_names.append(game['name'])
+
+    game_dict = {game_ids_list[i]: game_names[i] for i in range(len(game_ids_list))}
+
+    return render_template('all_reviews.html', reviews=reviews, game_dict=game_dict, user=user)
 
 
 ############################################################################################
@@ -284,10 +290,8 @@ def delete_user_account():
     if authorized() == False:
         return redirect('/')
 
-    if CURR_USER in session:
-        del session[CURR_USER]
-
     db.session.delete(g.user)
+    del session[CURR_USER]
     db.session.commit()
 
     flash(f"Account deleted. We're sad to see you go!", 'danger')
