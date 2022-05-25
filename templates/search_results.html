@@ -25,7 +25,7 @@
               </form>
             {% endif %}
         </div>
-            <img src="{{game.image_url}}" class="card-img-top" style="height: 15rem; object-fit: cover;"alt="A picture of {{game.name}}">
+            <a href="/games/game/{{game.id}}"><img src="{{game.image_url}}" class="card-img-top" style="height: 15rem; object-fit: cover;"alt="A picture of {{game.name}}"></a>
             <div data-id="{{game.id}}" class="card-body text-left">
                 <p>PRICE: <span class="badge badge-success">${{game.price}}</span></p>
                 <p>CATEGORIES: 
