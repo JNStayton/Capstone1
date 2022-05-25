@@ -1,7 +1,7 @@
 ## Duncan's Toy Chest!
 
-> **LIVE LINK:** https://duncans-toy-chest.herokuapp.com/
-> **BOARD GAME ATLAS API DOCS:** https://www.boardgameatlas.com/api/docs
+**LIVE LINK:** https://duncans-toy-chest.herokuapp.com/
+**BOARD GAME ATLAS API DOCS:** https://www.boardgameatlas.com/api/docs
 
 _This is my first capstone project for the Springboard Software Engineering Bootcamp. The program is a full CRUD app using the Board Game Atlas API._
 
