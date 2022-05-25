@@ -1,4 +1,8 @@
 ## Duncan's Toy Chest!
+
+> **LIVE LINK:** https://duncans-toy-chest.herokuapp.com/
+> **BOARD GAME ATLAS API DOCS:** https://www.boardgameatlas.com/api/docs
+
 _This is my first capstone project for the Springboard Software Engineering Bootcamp. The program is a full CRUD app using the Board Game Atlas API._
 
 _The app uses **Python** and **Flask** server-side, pulls and manipulates data from the BGA API, stores user information (including favorites board games and board game reviews) to a PostgreSQL database. The frontend is lightly styled with **Bootstrap** and a **styles.css** file in the **/static** folder. The app also uses **PostGreSQL**, and needs a database named `boardgames` to run correctly. More in depth information on the project, including database schemas and the project proposal, can be found in **/schemas**_
