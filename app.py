@@ -241,7 +241,7 @@ def login_user():
 
         if user:
             session[CURR_USER] = user.username
-            flash(f'Welcome back, {user.username}!', 'success')
+            flash(f'Welcome back, {user.username.capitalize()}!', 'success')
             return redirect('/games/top_games')
         
         flash('Oops! Invalid username or password. Please try again or create an account!', 'danger')
