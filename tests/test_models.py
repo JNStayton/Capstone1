@@ -71,10 +71,11 @@ class UserModelTestCase(TestCase):
         self.assertEqual(self.test1.authenticate('test1', 'test1'), test1)
 
         # test invalid username
-        self.assertEqual(self.test1.authenticate('wasedfj', 'test1'), False)
+        # self.assertEqual(self.test1.authenticate('wasedfj', 'test1'), False)
+        self.assertFalse(self.test1.authenticate('wasedfj', 'test1'))
 
         #test invalid password
-        self.assertEqual(self.test1.authenticate('test1', 'quwaygeuh'), False)
+        self.assertFalse(self.test1.authenticate('test1', 'quwaygeuh'))
 
 
 class LikeTestCase(TestCase):

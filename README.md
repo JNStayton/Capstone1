@@ -23,6 +23,9 @@ Be sure to register an account to see the full app!
 ### Playing with the App:
 >Be sure to register an account to see the full app!
 
+DB Schema:
+![DB Schema](schemas/db_schema.jpg)
+
 **Basic User Schema:**
 - username (primary key)
 - email
