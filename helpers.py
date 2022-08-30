@@ -1,3 +1,4 @@
+from multiprocessing.dummy import active_children
 from flask import g, flash, redirect
 from functools import wraps
 import requests
@@ -74,7 +75,6 @@ def main_request(base_url, endpoint):
     json = resp.json()
     games = json['games']
     return games
-
 
 def get_likes(user):
     """Retrieve liked game ids for a user"""

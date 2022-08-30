@@ -33,12 +33,30 @@ client_id = 'Vk9QEJ2umU'
 ############################################################################################
 # SEARCH ROUTES for API
 ############################################################################################
+limit = 12
 
-@app.route('/games/top_games')
-def show_top_games():
+# @app.route('/games/Rated')
+# def show_top_games():
+#     """Get game data from BGA based on its rank and display in groups of 24"""
+
+#     g.page_count = None
+
+#     games = main_request(base_url, f'/search/?order_by=rank&limit={limit}&client_id={client_id}')
+    
+#     category_dict = get_category_names(games)
+
+#     game_ids_list = get_likes(g.user)
+
+#     return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
+
+
+@app.route('/games/Rated/<int:num>')
+def show_top_games_pages(num):
     """Get game data from BGA based on its rank and display in groups of 24"""
 
-    games = main_request(base_url, f'/search/?order_by=rank&limit=24&client_id={client_id}')
+    g.page_count = num
+
+    games = main_request(base_url, f'/search/?order_by=rank&limit={limit}&skip={limit * (num-1)}&client_id={client_id}')
     
     category_dict = get_category_names(games)
 
@@ -47,13 +65,31 @@ def show_top_games():
     return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
 
 
-@app.route('/games/<category_name>')
-def show_games_in_category(category_name):
+# @app.route('/games/<category_name>')
+# def show_games_in_category(category_name):
+#     """Show top 24 games in a specific category"""
+
+#     g.page_count = None
+
+#     category = Category.query.filter_by(name=category_name).first()
+    
+#     games = main_request(base_url, f'/search/?categories={category.id}&limit={limit}order_by=rank&client_id={client_id}')
+
+#     category_dict = get_category_names(games)
+#     game_ids_list = get_likes(g.user)
+
+#     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
+
+
+@app.route('/games/<category_name>/<int:num>')
+def show_games_in_category_pages(category_name, num):
     """Show top 24 games in a specific category"""
+
+    g.page_count = num
 
     category = Category.query.filter_by(name=category_name).first()
     
-    games = main_request(base_url, f'/search/?categories={category.id}&limit=24&order_by=rank&client_id={client_id}')
+    games = main_request(base_url, f'/search/?categories={category.id}&limit={limit}&skip={limit * num}&order_by=rank&client_id={client_id}')
 
     category_dict = get_category_names(games)
     game_ids_list = get_likes(g.user)
@@ -61,28 +97,46 @@ def show_games_in_category(category_name):
     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
 
 
-@app.route('/games/player_count_<int:num>')
-def show_games_by_player_count(num):
+# @app.route('/games/player_count_<int:players>')
+# def show_games_by_player_count(players):
+#     """Show top ranked games based on minimum number of players"""
+
+#     g.page_count = None
+
+#     games = main_request(base_url, f'/search/?min_players={players}&order_by=rank&limit={limit}&client_id={client_id}')
+
+#     category_dict = get_category_names(games)
+#     game_ids_list = get_likes(g.user)
+
+#     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_count_{players}')
+
+
+@app.route('/games/player_count_<int:players>/<int:num>')
+def show_games_by_player_count_pages(players, num):
     """Show top ranked games based on minimum number of players"""
 
-    games = main_request(base_url, f'/search/?min_players={num}&order_by=rank&limit=24&client_id={client_id}')
+    g.page_count = num
+
+    games = main_request(base_url, f'/search/?min_players={players}&order_by=rank&limit={limit}&skip={limit*num}&client_id={client_id}')
 
     category_dict = get_category_names(games)
     game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{num}+ Players')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_count_{players}')
 
 
-@app.route('/games/player_min_<int:min_num>&player_max_<int:max_num>')
-def show_games_by_player_range(min_num, max_num):
+@app.route('/games/player_min_<int:min_player>&player_max_<int:max_player>/<int:num>')
+def show_games_by_player_range(min_player, max_player, num):
     """Show top ranked games based on min and max player range"""
 
-    games = main_request(base_url, f'/search/?min_players={min_num}&max_players={max_num}&limit=24&order_by=rank&client_id={client_id}')
+    g.page_count = num
+
+    games = main_request(base_url, f'/search/?min_players={min_player}&max_players={max_player}&limit={limit}&skip={limit*num}&order_by=rank&client_id={client_id}')
 
     category_dict = get_category_names(games)
     game_ids_list = get_likes(g.user)
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{min_num}-{max_num} Players')
+    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_min_{min_player}&player_max_{max_player}')
 
 
 @app.route('/games/name')
@@ -90,10 +144,12 @@ def search_games_by_name():
     """Search the API by game name, return first 24 to match the name OR, if search form is empty, return top 24 games"""
     query = request.args.get('query')
 
+    g.page_count = 0
+
     if query == '':
-        games = main_request(base_url, f'/search?limit=24&client_id={client_id}')
+        games = main_request(base_url, f'/search?limit={limit*2}&client_id={client_id}')
     else:
-        games = main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit=24&client_id={client_id}')
+        games = main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit={limit*2}&client_id={client_id}')
     
     category_dict = get_category_names(games)
     game_ids_list = get_likes(g.user)
@@ -199,7 +255,7 @@ def home():
     if logged in, redirect to /top_games"""
     if not g.user:
         return redirect('/login')
-    return redirect('/games/top_games')
+    return redirect('/games/Rated/1')
 
 
 @app.route('/register', methods=['GET', 'POST'])

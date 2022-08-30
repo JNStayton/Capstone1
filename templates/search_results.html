@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="page-content my-4 p-2">
-<h2 class="my-2">Top {{type}} Games:</h2>
+<h2 class="my-2">{% if 'player' in type %} Top Multi-Player Games: {% else %} Top {{type}} Games: {% endif %}</h2>
 </div>
 <div id="game-container" class="row justify-content-center text-center">
 
@@ -30,18 +30,29 @@
                 <p>PRICE: <span class="badge badge-success">${{game.price}}</span></p>
                 <p>CATEGORIES: 
                     {% for category in category_dict.get(game.name) %}
-                        <a href="/games/{{category}}"><span class="badge badge-primary">{{category}}</span></a>
+                        <a href="/games/{{category}}/1"><span class="badge badge-primary">{{category}}</span></a>
                     {% endfor %}
                 </p>
                 <p>INFO: 
-                    <a href="/games/player_min_{{game.min_players}}&player_max_{{game.max_players}}"><span class="badge badge-warning">{{game.min_players}}-{{game.max_players}} Players</span></a>
+                    <a href="/games/player_min_{{game.min_players}}&player_max_{{game.max_players}}/1"><span class="badge badge-warning">{{game.min_players}}-{{game.max_players}} Players</span></a>
                     <span class="badge badge-info">{{game.min_age}} Years and Up</span>
                     <span class="badge badge-dark">{{game.min_playtime}}-{{game.max_playtime}} Minutes</span>
                 </p>
             </div>
         </div>
     {% endfor %}
-
+</div>
+<div class="row justify-content-between text-center">
+    {% if g.page_count == 1 %}
+    <a href="/games/{{type}}/{{g.page_count + 1}}"><button class="btn btn-large btn-primary m-4">Next</button></a>
+    {% elif g.page_count == 0 %}
+    <div></div>
+    {% elif g.page_count > 1 %}
+    <a href="/games/{{type}}/{{g.page_count - 1}}"><button class="btn btn-large btn-primary m-4">Back</button></a>
+    <a href="/games/{{type}}/{{g.page_count + 1}}"><button class="btn btn-large btn-primary m-4">Next</button></a>
+    <!-- {% elif g.page_count == 0 %}
+    <button><a href="/games/{{type}}/page_count_{{g.page_count + 1}}">Next</a></button> -->
+    {% endif %}
 </div>
 
 {% endblock %}

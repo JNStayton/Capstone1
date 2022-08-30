@@ -1,5 +1,11 @@
 ## Duncan's Toy Chest!
 
+TODO: 
+- get json['count'] and pass to search_results.html
+- use count to limit next/back buttons clickability
+- update tests to reflect new API endpoints and pagination
+- 404 page and route: https://stackoverflow.com/questions/33818438/flask-redirecting-nonexistent-urls
+
 - **LIVE LINK:** https://duncans-toy-chest.herokuapp.com/
 - **BOARD GAME ATLAS API DOCS:** https://www.boardgameatlas.com/api/docs
 
