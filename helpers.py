@@ -73,8 +73,12 @@ def main_request(base_url, endpoint):
     returns the parsed JSON response"""
     resp = requests.get(base_url + endpoint)
     json = resp.json()
-    games = json['games']
-    return games
+    games = json.get('games')
+    count = json.get('count')
+    if games and count:
+        return [games, count]
+    else:
+        return []
 
 def get_likes(user):
     """Retrieve liked game ids for a user"""

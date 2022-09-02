@@ -50,19 +50,26 @@ limit = 12
 #     return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
 
 
-@app.route('/games/Rated/<int:num>')
+@app.route('/games/<int:num>/Rated')
 def show_top_games_pages(num):
     """Get game data from BGA based on its rank and display in groups of 24"""
 
     g.page_count = num
 
-    games = main_request(base_url, f'/search/?order_by=rank&limit={limit}&skip={limit * (num-1)}&client_id={client_id}')
-    
-    category_dict = get_category_names(games)
+    resp = main_request(base_url, f'/search/?order_by=rank&limit={limit}&skip={limit * (num-1)}&client_id={client_id}')
 
-    game_ids_list = get_likes(g.user)
+    games = None
 
-    return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated')
+    if resp:
+        games = resp[0];
+        count = resp[1]
+        category_dict = get_category_names(games)
+        game_ids_list = get_likes(g.user)
+        
+    if games:
+        return render_template('search_results.html', games=games, category_dict=category_dict, game_ids_list=game_ids_list, type='Rated', count=count)
+    else:
+        return redirect('/error')
 
 
 # @app.route('/games/<category_name>')
@@ -81,7 +88,7 @@ def show_top_games_pages(num):
 #     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
 
 
-@app.route('/games/<category_name>/<int:num>')
+@app.route('/games/<int:num>/<category_name>/')
 def show_games_in_category_pages(category_name, num):
     """Show top 24 games in a specific category"""
 
@@ -89,12 +96,20 @@ def show_games_in_category_pages(category_name, num):
 
     category = Category.query.filter_by(name=category_name).first()
     
-    games = main_request(base_url, f'/search/?categories={category.id}&limit={limit}&skip={limit * num}&order_by=rank&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?categories={category.id}&limit={limit}&skip={limit * num}&order_by=rank&client_id={client_id}')
 
-    category_dict = get_category_names(games)
-    game_ids_list = get_likes(g.user)
+    games = None
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
+    if resp:
+        games = resp[0];
+        count = resp[1]
+        category_dict = get_category_names(games)
+        game_ids_list = get_likes(g.user)
+
+    if games:
+        return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name, count=count)
+    else:
+        return redirect('/error')
 
 
 # @app.route('/games/player_count_<int:players>')
@@ -111,50 +126,78 @@ def show_games_in_category_pages(category_name, num):
 #     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_count_{players}')
 
 
-@app.route('/games/player_count_<int:players>/<int:num>')
+@app.route('/games/<int:num>/player_count_<int:players>')
 def show_games_by_player_count_pages(players, num):
     """Show top ranked games based on minimum number of players"""
 
     g.page_count = num
 
-    games = main_request(base_url, f'/search/?min_players={players}&order_by=rank&limit={limit}&skip={limit*num}&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?min_players={players}&order_by=rank&limit={limit}&skip={limit*num}&client_id={client_id}')
 
-    category_dict = get_category_names(games)
-    game_ids_list = get_likes(g.user)
+    games = None
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_count_{players}')
+    if resp:
+        games = resp[0];
+        count = resp[1]
+        category_dict = get_category_names(games)
+        game_ids_list = get_likes(g.user)
+
+    if games:
+        return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_count_{players}', count=count)
+    else:
+        return redirect('/error')
 
 
-@app.route('/games/player_min_<int:min_player>&player_max_<int:max_player>/<int:num>')
+@app.route('/games/<int:num>/player_min_<int:min_player>&player_max_<int:max_player>')
 def show_games_by_player_range(min_player, max_player, num):
     """Show top ranked games based on min and max player range"""
 
     g.page_count = num
 
-    games = main_request(base_url, f'/search/?min_players={min_player}&max_players={max_player}&limit={limit}&skip={limit*num}&order_by=rank&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?min_players={min_player}&max_players={max_player}&limit={limit}&skip={limit*num}&order_by=rank&client_id={client_id}')
 
-    category_dict = get_category_names(games)
-    game_ids_list = get_likes(g.user)
+    games = None
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_min_{min_player}&player_max_{max_player}')
+    if resp:
+        games = resp[0];
+        count = resp[1]
+        category_dict = get_category_names(games)
+        game_ids_list = get_likes(g.user)
 
+    if games:
+        return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'player_min_{min_player}&player_max_{max_player}', count=count)
+    else:
+        return redirect('/error')
 
-@app.route('/games/name')
-def search_games_by_name():
+@app.route('/error')
+def error_page():
+    return render_template('404.html')
+
+@app.route('/games/<int:num>/name')
+def search_games_by_name(num):
     """Search the API by game name, return first 24 to match the name OR, if search form is empty, return top 24 games"""
     query = request.args.get('query')
+    query_string = f'name?query={query}'
 
-    g.page_count = 0
+    g.page_count = num
 
     if query == '':
-        games = main_request(base_url, f'/search?limit={limit*2}&client_id={client_id}')
+        resp = main_request(base_url, f'/search?limit={limit}&skip={limit*num}&client_id={client_id}')
     else:
-        games = main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit={limit*2}&client_id={client_id}')
-    
-    category_dict = get_category_names(games)
-    game_ids_list = get_likes(g.user)
+        resp = main_request(base_url, f'/search/?name={query}&fuzzy_match=true&limit={limit}&skip={limit*num}&client_id={client_id}')
 
-    return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=f'{query.capitalize()}')
+    games = None
+
+    if resp:
+        games = resp[0];
+        count = resp[1]
+        category_dict = get_category_names(games)
+        game_ids_list = get_likes(g.user)
+
+    if games:
+        return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=query_string, count=count)
+    else:
+        return redirect('/error')
 
 
 ############################################################################################
@@ -168,7 +211,9 @@ def show_game_page(game_id):
 
     form=ReviewForm()
 
-    games = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
+
+    games = resp[0]
     
     category_dict = get_category_names(games)
     game = games[0]
@@ -202,7 +247,8 @@ def show_user_page(username):
     game_ids = ','.join([str(id) for id in liked_list])
 
     if game_ids:
-        games = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
+        resp = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
+        games = resp[0]
     else:
         games = {}
 
@@ -224,7 +270,8 @@ def show_user_reviews(username):
         game_ids_list.append(review.game_id)
     
     game_ids = ','.join([str(id) for id in game_ids_list])
-    games = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?ids={game_ids}&client_id={client_id}')
+    games = resp[0]
 
     game_names = []
     for game in games:
@@ -255,7 +302,7 @@ def home():
     if logged in, redirect to /top_games"""
     if not g.user:
         return redirect('/login')
-    return redirect('/games/Rated/1')
+    return redirect('/games/1/Rated')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -395,7 +442,8 @@ def delete_review(review_id):
 def like_game(game_id):
     """Logged in user may like or unlike a game"""
     
-    games = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
+    resp = main_request(base_url, f'/search/?ids={game_id}&client_id={client_id}')
+    games = resp[0]
     game_id = games[0]['id']
 
     game_ids_list = get_likes(g.user)
