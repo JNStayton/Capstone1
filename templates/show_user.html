@@ -9,7 +9,7 @@
         <h6 class="my-2">Email: {{user.email}}</h6>
         <a href="/users/edit" class="btn btn-outline-success btn-lg btn-block my-2">Edit Account Info</a>
         <form action="/users/delete" method="POST">
-        <button type="submit" class="btn btn-outline-danger btn-lg btn-block my-2">Delete Account</button>
+        <button id="delete-user-btn" type="submit" class="btn btn-outline-danger btn-lg btn-block my-2">Delete Account</button>
         </form>
         {% endif %}
         <h4 class="my-2">Latest Reviews:</h4>
@@ -37,7 +37,7 @@
               <h5 class="card-title">{{game.name}}
                 {% if g.user %}
                 <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="messages-form">
-                    <button class="float-right btn btn-sm
+                    <button id="{{game.name}}-like-btn" class="float-right btn btn-sm
                     {% if game.id in game_ids_list %}
                     btn-danger
                     {% else %}

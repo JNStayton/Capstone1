@@ -15,8 +15,11 @@ class HomePageTest(BaseCase):
         # open home page
         self.open(base_url)
 
-        # assert page title
+        # assert page title; we are not logged in, so it should redirect us to the login page
         self.assert_title("Login Page")
 
+        # type username in form input
+        self.type('#username', 'jareth')
 
-        # assert navbar 
+        #type password in form input
+        self.type('#password', 'jarethcat')

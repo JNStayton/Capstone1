@@ -16,7 +16,7 @@
           <h5 class="card-title">{{game.name}} <span class="badge badge-success">${{game.price}}</span>
             {% if g.user %}
             <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="likes-form">
-                <button id="like-btn" data-id="{{game.id}}" class="float-right btn btn-sm
+                <button id="{{game.name}}-like-btn" data-id="{{game.id}}" class="float-right btn btn-sm
                 {% if game.id in game_ids_list %}
                 btn-danger
                 {% else %}
@@ -75,9 +75,9 @@
         <div class="card-footer">
             {% if g.user.username == review.user_username %}
             <form style="display: inline;" action="/reviews/{{review.id}}/delete" method="POST">
-                <button class="btn btn-danger float-right"><i class="fa-solid fa-trash-can"></i></button>
+                <button id="delete-review-{{review.id}}-btn"class="btn btn-danger float-right"><i class="fa-solid fa-trash-can"></i></button>
             </form>
-            <a class="btn btn-outline-success float-right mx-2" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
+            <a id="edit-review-{{review.id}}-link"class="btn btn-outline-success float-right mx-2" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
             {% endif %}
         </div>
       </div>

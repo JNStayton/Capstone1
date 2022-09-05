@@ -23,9 +23,9 @@
     <div class="card-footer">
         {% if g.user.username == review.user_username %}
         <form style="display: inline;" action="/reviews/{{review.id}}/delete" method="POST">
-            <button class="btn btn-danger float-right mx-2"><i class="fa-solid fa-trash-can"></i></button>
+            <button id="delete-review-{{review.id}}-btn" class="btn btn-danger float-right mx-2"><i class="fa-solid fa-trash-can"></i></button>
         </form>
-        <a class="btn btn-outline-success float-right" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
+        <a id="edit-review-{{review.id}}-link" class="btn btn-outline-success float-right" href="/reviews/{{review.id}}/edit"><i class="fa-solid fa-pen-to-square"></i></a>
         {% endif %}
     </div>
   </div>

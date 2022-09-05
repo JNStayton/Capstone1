@@ -15,7 +15,7 @@
             <a href="/games/game/{{game.id}}" class="view d-inline"><b>{{game.name.upper()}}</b></a>
             {% if g.user %}
             <form method="POST" class="d-inline" action="/users/like_game/{{ game.id }}" id="likes-form">
-                <button data-id="{{game.id}}" id="like-btn" class="float-right btn btn-sm
+                <button data-id="{{game.id}}" id="{{game.name}}-like-btn" class="float-right btn btn-sm
                   {% if game.id in game_ids_list %}
                     btn-danger
                   {% else %}
@@ -45,17 +45,17 @@
 </div>
 <div class="row justify-content-between text-center">
     {% if count-(g.page_count*10) <= 10 %}
-    <a href="/games/{{g.page_count - 1}}/{{type}}"><button class="btn btn-large btn-primary m-4">Back</button></a>
+    <a href="/games/{{g.page_count - 1}}/{{type}}"><button id="back-btn" class="btn btn-large btn-primary m-4">Back</button></a>
 
     {% elif g.page_count == 1 %}
-    <a href="/games/{{g.page_count + 1}}/{{type}}"><button class="btn btn-large btn-primary m-4">Next</button></a>
+    <a href="/games/{{g.page_count + 1}}/{{type}}"><button id="next-btn" class="btn btn-large btn-primary m-4">Next</button></a>
 
     {% elif g.page_count == 0 %}
     <div></div>
     
     {% elif g.page_count > 1 %}
-    <a href="/games/{{g.page_count - 1}}/{{type}}"><button class="btn btn-large btn-primary m-4">Back</button></a>
-    <a href="/games/{{g.page_count + 1}}/{{type}}"><button class="btn btn-large btn-primary m-4">Next</button></a>
+    <a href="/games/{{g.page_count - 1}}/{{type}}"><button id="back-btn" class="btn btn-large btn-primary m-4">Back</button></a>
+    <a href="/games/{{g.page_count + 1}}/{{type}}"><button id="next-btn" class="btn btn-large btn-primary m-4">Next</button></a>
     <!-- {% elif g.page_count == 0 %}
     <button><a href="/games/{{type}}/page_count_{{g.page_count + 1}}">Next</a></button> -->
     {% endif %}
