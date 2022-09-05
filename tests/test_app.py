@@ -19,7 +19,7 @@ class SearchViewFunctionsTestCase(TestCase):
         """Tests the call for top 24 ranked games"""
 
         with app.test_client() as c:
-            resp = c.get('/games/top_games')
+            resp = c.get('/games/1/Rated')
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Top Rated Games', str(resp.data))
             self.assertIn('PRICE', str(resp.data))
@@ -30,33 +30,49 @@ class SearchViewFunctionsTestCase(TestCase):
         """Test the call for top 24 games within a certain category"""
 
         with app.test_client() as c:
-            resp = c.get('/games/Animals')
+            resp = c.get('/games/1/Asymmetric')
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('Top Animals Games', str(resp.data))
+            self.assertIn('Top Asymmetric Games', str(resp.data))
 
     def test_show_games_by_player_count(self):
         """Test the call for top 24 games that are X or more players"""
 
         with app.test_client() as c:
-            resp = c.get('/games/player_count_2')
+            resp = c.get('/games/1/player_count_2')
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('Top 2+ Players Games', str(resp.data))
+            self.assertIn('Top Multi-Player Games', str(resp.data))
 
     def test_show_games_by_player_range(self):
         """Test the call for top 24 games that are between X and Y number of players"""
         
         with app.test_client() as c:
-            resp = c.get('/games/player_min_2&player_max_4')
+            resp = c.get('/games/1/player_min_2&player_max_4')
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('Top 2-4 Players Games', str(resp.data))
+            self.assertIn('Top Multi-Player Games', str(resp.data))
 
     def test_search_games_by_name(self):
         """Test the call for top 24 games that match a fuzzy search on the typed name input"""
 
         with app.test_client() as c:
-            resp = c.get('/games/name?query=scythe')
+            resp = c.get('/games/1/name?query=scythe')
             self.assertEqual(resp.status_code, 200)
             self.assertIn('scythe', str(resp.data))
+
+    def test_pagination_error_handler(self):
+        """Test that if pagination count exceeds total API call game count, proper redirect occurs"""
+
+        with app.test_client() as c:
+            resp = c.get('/games/999999999/name?query=scythe', follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Uh oh!', str(resp.data))
+    
+    def test_404_error_handler(self):
+        """Test that if user attempts to go to a route that does not exist, proper redirect occurs"""
+
+        with app.test_client() as c:
+            resp = c.get('/thisisnotareallink', follow_redirects=True)
+            self.assertEqual(resp.status_code, 404)
+            self.assertIn('Uh oh!', str(resp.data))
 
 
 class DisplayViewFunctionsTestModel(TestCase):

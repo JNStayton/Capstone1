@@ -88,7 +88,7 @@ def show_top_games_pages(num):
 #     return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=category_name)
 
 
-@app.route('/games/<int:num>/<category_name>/')
+@app.route('/games/<int:num>/<category_name>')
 def show_games_in_category_pages(category_name, num):
     """Show top 24 games in a specific category"""
 
@@ -96,6 +96,9 @@ def show_games_in_category_pages(category_name, num):
 
     category = Category.query.filter_by(name=category_name).first()
     
+    if not category:
+        return redirect('/error')
+
     resp = main_request(base_url, f'/search/?categories={category.id}&limit={limit}&skip={limit * num}&order_by=rank&client_id={client_id}')
 
     games = None
@@ -169,10 +172,6 @@ def show_games_by_player_range(min_player, max_player, num):
     else:
         return redirect('/error')
 
-@app.route('/error')
-def error_page():
-    return render_template('404.html')
-
 @app.route('/games/<int:num>/name')
 def search_games_by_name(num):
     """Search the API by game name, return first 24 to match the name OR, if search form is empty, return top 24 games"""
@@ -198,6 +197,15 @@ def search_games_by_name(num):
         return render_template('search_results.html', games=games, game_ids_list=game_ids_list, category_dict=category_dict, type=query_string, count=count)
     else:
         return redirect('/error')
+
+@app.route('/error')
+def error_page():
+    return render_template('404.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 
 
 ############################################################################################
