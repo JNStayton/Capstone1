@@ -367,7 +367,7 @@ def logout_user():
     if CURR_USER in session:
         del session[CURR_USER]
         flash('See you next time!', 'success')
-    return redirect('/games/top_games')
+    return redirect('/games/1/Rated')
 
 
 
