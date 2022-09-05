@@ -332,7 +332,7 @@ def signup():
         # add new user to g, and set session
         session[CURR_USER] = user.username
         flash(f'Successfully created account! Welcome, {user.username}!', 'success')
-        return redirect('/games/top_games')
+        return redirect('/games/1/Rated')
 
     else:
         return render_template('register.html', form=form)
@@ -353,7 +353,7 @@ def login_user():
         if user:
             session[CURR_USER] = user.username
             flash(f'Welcome back, {user.username.capitalize()}!', 'success')
-            return redirect('/games/top_games')
+            return redirect('/games/1/Rated')
         
         flash('Oops! Invalid username or password. Please try again or create an account!', 'danger')
 
