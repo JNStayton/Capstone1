@@ -30,7 +30,7 @@ class Like(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
 
-    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE'))
+    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE', onupdate='CASCADE'))
 
     game_id = db.Column(db.String, nullable=False)
 
@@ -50,7 +50,7 @@ class Review(db.Model):
 
     game_id = db.Column(db.String, nullable=False)
 
-    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE'), nullable=False)
+    user_username = db.Column(db.String, db.ForeignKey('users.username', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
 
 
 class User(db.Model):

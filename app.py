@@ -384,7 +384,10 @@ def edit_user_profile():
 
         db.session.add(user)
         db.session.commit()
+
         session[CURR_USER] = user.username
+        g.user = User.query.get(session[CURR_USER])
+        
         flash(f'Successfully updated username to {user.username}!', 'success')
         return redirect(f'/users/profile/{g.user.username}')
     
