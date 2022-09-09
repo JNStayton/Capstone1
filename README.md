@@ -1,7 +1,12 @@
 ## Duncan's Toy Chest!
 
 TODO: 
--Cypress / End to end testing! SeleniumBase?
+- E2E testing - journey tests; create test logs to view
+- README instructions for running UI tests; browser and driver installation
+
+Chromedriver location: /home/jess/projects/capstone-1/venv/lib/python3.8/site-packages/seleniumbase/drivers/chromedriver
+
+Chrome location: /bin/google-chrome
 
 - **LIVE LINK:** https://duncans-toy-chest.herokuapp.com/
 - **BOARD GAME ATLAS API DOCS:** https://www.boardgameatlas.com/api/docs
