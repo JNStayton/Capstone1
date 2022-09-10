@@ -3,6 +3,9 @@ from seleniumbase import BaseCase
 base_url = 'https://duncans-toy-chest.herokuapp.com/login'
 
 class HomeTest(BaseCase):
+    """
+    Tests the user login journey;
+    Scenario: User logs in to site"""
     def test_home_page(self):
         #open home page
         self.open(base_url)
@@ -30,3 +33,5 @@ class HomeTest(BaseCase):
         #dismiss successful login alert
         self.click(".close")
         self.assert_element_absent(".alert-success")
+        #user can view and click on "my profile" link in navbar
+        self.assert_element()
