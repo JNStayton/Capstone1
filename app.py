@@ -395,6 +395,14 @@ def edit_user_profile():
         return render_template('edit_user.html', form=form)
 
 
+# DETAIL:  Key (username)=(jareth) is still referenced from table "likes".
+
+# [SQL: UPDATE users SET username=%(username)s WHERE users.username = %(users_username)s]
+# [parameters: {'username': 'Jareth', 'users_username': 'jareth'}]
+# (Background on this error at: https://sqlalche.me/e/14/gkpj)
+# 127.0.0.1 - - [07/Sep/2022 19:02:17] "POST /users/edit HTTP/1.1" 500 -
+
+
 @app.route('/users/delete', methods=['POST'])
 @authorized
 def delete_user_account():
