@@ -22,11 +22,11 @@
           <ul class="navbar-nav mr-auto">
             {% if g.user %}
             <li class="nav-item">
-              <a class="nav-link" href="/users/profile/{{g.user.username}}">My Profile</a>
+              <a id="my-profile-link" class="nav-link" href="/users/profile/{{g.user.username}}">My Profile</a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="/games/1/Rated">Top Rated</a>
+              <a id="top-rated-games-link" class="nav-link" href="/games/1/Rated">Top Rated</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -34,7 +34,7 @@
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% for num in range(5) %}
-                <a class="dropdown-item" href="/games/1/player_count_{{num+1}}">{{num+1}}+</a>
+                <a id="player-count={{num+1}}" class="dropdown-item" href="/games/1/player_count_{{num+1}}">{{num+1}}+</a>
                 {% endfor %}
               </div>
             </li>
@@ -52,15 +52,15 @@
           <ul class="navbar-nav ml-auto">
             {% if not g.user %}
             <li class="nav-item">
-              <a class="nav-link" href="/register">Sign Up</a>
+              <a id="register" class="nav-link" href="/register">Sign Up</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/login">Login</a>
+              <a id="login" class="nav-link" href="/login">Login</a>
             </li>
             {% endif %}
             {% if g.user %}
             <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
+              <a id="logout" class="nav-link" href="/logout">Logout</a>
             </li>
             {% endif %}
         </ul>
