@@ -3,6 +3,7 @@ __pycache__
 .vscode
 /tests/__pycache__
 /ui_tests/__pychache__
+/ui_tests/assets
 /ui_tests/archived_logs
 /ui_tests/latest_logs 
 /ui_tests/.pytest_cache
