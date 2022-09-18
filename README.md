@@ -2,9 +2,18 @@
 
 TODO: 
 - E2E testing - journey tests; create test logs to view
+  - create setUp and tearDown methods with testuser
+  - write test for:
+    - Review Writing/Editing Journey
+    - User delete account Journey
+    - Finish user Likes / Favorites Journey
+  
 - README instructions for running UI tests; browser and driver installation
 
 Chromedriver location: /home/jess/projects/capstone-1/venv/lib/python3.8/site-packages/seleniumbase/drivers/chromedriver
+
+--> include steps for downloading SeleniumBase and specific chromedriver
+--> Download test commands and results as text file to include in repo
 
 Chrome location: /bin/google-chrome
 

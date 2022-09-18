@@ -322,20 +322,24 @@ def signup():
 
     form = NewUser()
 
-    if form.validate_on_submit():
-        user = User.register(
-            username=form.username.data,
-            password=form.password.data,
-            email=form.email.data
-            )
-        db.session.commit()
-        # add new user to g, and set session
-        session[CURR_USER] = user.username
-        flash(f'Successfully created account! Welcome, {user.username}!', 'success')
-        return redirect('/games/1/Rated')
-
-    else:
+    try:
+        if form.validate_on_submit():
+            user = User.register(
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data
+                )
+            db.session.commit()
+            # add new user to g, and set session
+            session[CURR_USER] = user.username
+            flash(f'Successfully created account! Welcome, {user.username}!', 'success')
+            return redirect('/games/1/Rated')
+        else:
+            return render_template('register.html', form=form)
+    except:
+        flash('That username or email is already registered with us!', 'warning')
         return render_template('register.html', form=form)
+
 
 
 @app.route('/login', methods=['GET', 'POST'])

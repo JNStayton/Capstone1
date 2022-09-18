@@ -7,7 +7,7 @@
         <hr>
         {% if g.user.username == user.username %}
         <h6 class="my-2">Email: {{user.email}}</h6>
-        <a href="/users/edit" class="btn btn-outline-success btn-lg btn-block my-2">Edit Account Info</a>
+        <a id="edit-user-btn" href="/users/edit" class="btn btn-outline-success btn-lg btn-block my-2">Edit Account Info</a>
         <form action="/users/delete" method="POST">
         <button id="delete-user-btn" type="submit" class="btn btn-outline-danger btn-lg btn-block my-2">Delete Account</button>
         </form>

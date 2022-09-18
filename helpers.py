@@ -1,4 +1,3 @@
-from multiprocessing.dummy import active_children
 from flask import g, flash, redirect
 from functools import wraps
 import requests
