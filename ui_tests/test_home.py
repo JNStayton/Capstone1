@@ -160,7 +160,7 @@ class HomePageUserJourney(BaseCase):
 
         #link to sign up appears on page
         self.assert_element('a:contains("Sign up!")')
-        self.click("signup-redirect-link")
+        self.click("#signup-redirect-link")
 
         #redirected to register page
         self.assert_title(" Register ")
@@ -169,13 +169,17 @@ class HomePageUserJourney(BaseCase):
         self.assert_element("#username")
         self.type("#username", "Jareth")
 
-        # #password input
+        #password input
         self.assert_element("#password")
         self.type("#password", "password")
 
+        #email input
+        self.assert_element("#email")
+        self.type("#email", "jareth@cat.com")
+
         self.click("#register-btn")
 
-        # #error login alert shows
+        # #error register alert shows
         self.assert_element(".alert-warning")
         self.assert_element('div:contains("That username or email is already registered with us!")')
 
