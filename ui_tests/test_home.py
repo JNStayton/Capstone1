@@ -148,5 +148,40 @@ class HomePageUserJourney(BaseCase):
         self.click(".close")   
         self.assert_element_absent(".alert-danger")
 
+    def test_error_alerts_on_registering_with_taken_username_or_password(self):
+        """Given I am on the home page
+        And I attempt to sign up as a user
+        When I enter a username or email that has already been registered
+        Then I cannot register with that email or password
+        And I see an alert with a "username or email already registered" message
+        And the error alert is dismissible"""
+
+        self.open(base_url)
+
+        #link to sign up appears on page
+        self.assert_element('a:contains("Sign up!")')
+        self.click("signup-redirect-link")
+
+        #redirected to register page
+        self.assert_title(" Register ")
+
+        #taken username input
+        self.assert_element("#username")
+        self.type("#username", "Jareth")
+
+        # #password input
+        self.assert_element("#password")
+        self.type("#password", "password")
+
+        self.click("#register-btn")
+
+        # #error login alert shows
+        self.assert_element(".alert-warning")
+        self.assert_element('div:contains("That username or email is already registered with us!")')
+
+        # #alert is dismissible 
+        self.click(".close")   
+        self.assert_element_absent(".alert-warning")
+
 
 
