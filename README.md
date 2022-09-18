@@ -62,7 +62,7 @@ DB Schema:
 ### Tests:
 _This app is tested using **unittest**, **SeleniumBase**, and **pytest**. Each model and view function from **models.py** and **app.py** is tested, as well as the routes rendering html templates._
 
-#### Unit tests and API tests
+- #### Unit tests and API tests
 **/tests and the files within it** connect to a database named `boardgames_test`. Be sure to create this database before running the tests file.
 
 Chromedriver location: /home/jess/projects/capstone-1/venv/lib/python3.8/site-packages/seleniumbase/drivers/chromedriver
@@ -72,8 +72,8 @@ Chromedriver location: /home/jess/projects/capstone-1/venv/lib/python3.8/site-pa
 
 Chrome location: /bin/google-chrome
 
-#### UI Tests
-**/ui_tests** This directory holds the UI tests for the live link. Test reports documented in **dashboard.html**. 
+- #### UI Tests
+The **/ui_tests** directory holds the UI tests for the live link. Test reports documented in **dashboard.html**. 
 
 To view the dashboard test reports, in your local repo in VSCode, right-click on **dashboard.html** inside of the ui_tests folder, and select 'Open With Live Server'.
 
@@ -93,7 +93,8 @@ You can check the SeleniumBase and WebDriver docs if you need help troubleshooti
 Once you have SeleniumBase and Chromedriver installed, in the terminal, type the following commands:
 1. `cd ui_tests`
 2. `pytest` >> This command will run all UI tests in order
-   **Note: tests run headless by default; to view the tests in browser, run with `--headed`**
+   - **Note: tests run headless by default; to view the tests in browser, run with `--headed`**
+
 3. `pytest NAME_OF_TEST_FILE.py` >> You can select which individual test file to run by entering the name of the test
    - **test_home.py** >> Runs tests for user registration, login, logout, and deleting account
    - **test_likes.py** >> Runs tests for authenticated user liking, unliking games from home page, profile page, and game details page 
