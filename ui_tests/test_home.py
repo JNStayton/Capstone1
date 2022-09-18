@@ -4,7 +4,7 @@ base_url = 'https://duncans-toy-chest.herokuapp.com/'
 fake_user = 'blarggglhlhlh58920496!!%C'
 fake_password = 'thisisaverybadpassword123456'
 
-class HomePageUserJourney(BaseCase):
+class HomePageUserRegisterLoginDeleteAccountJourney(BaseCase):
     """
     Feature: Basic user navigation works: login, view profile, log out
     Scenario: User logs in to site
@@ -186,6 +186,45 @@ class HomePageUserJourney(BaseCase):
         # #alert is dismissible 
         self.click(".close")   
         self.assert_element_absent(".alert-warning")
+
+    def test_user_delete_account(self):
+        """Given that I am an authenticated user
+        When I navigated to my profile page
+        And click the "Delete My Account" button
+        Then my account is deleted
+        And when I try to login with my credentials
+        Then I receive an invalid username or password error alert"""
+
+        self.open(base_url)
+
+        username = "test123"
+        password="password123"
+        email="test123@test.com"
+
+        # register with test user account
+        self.open(base_url)
+        self.click('a:contains("Sign up")')
+        self.type("#username", username)
+        self.type("#password", password)
+        self.type("#email", email)
+
+        self.click("#register-btn")
+
+        #naviagte to my profile and delete account
+        self.click("#my-profile-link")
+        self.click("#delete-user-btn")
+
+        #verify alert of successful account deletion
+        self.assert_element(".alert-danger")
+        self.assert_element("div:contains('Account deleted.')")
+
+        #verify user cannot sign in with test credentials
+        self.open(base_url)
+        self.type("#username", username)
+        self.type("#password", password)
+        self.click("#login-btn")
+        self.assert_element(".alert-danger")
+        self.assert_element("div:contains('Oops! Invalid username or password. Please try again or create an account!')")
 
 
 

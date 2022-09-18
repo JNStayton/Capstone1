@@ -73,38 +73,38 @@ class UserReviewsJourney(BaseTestCase):
         self.click("a:contains('Reviews')")
 
         #user can view new review form
-        self.assert_text("Leave Review for Root", "h4")
+        self.assert_element("h4:contains('Leave Review for Root')")
 
         #input review title and text
-        self.type("#title", "Test")
-        self.type("#text", "Test")
+        self.type("#title", "Test-Review-Title")
+        self.type("#text", "Test-Review-Text")
         self.click("#leave-review-btn")
 
         #review appears on page
-        self.assert_text("div:contains('Test')")
-        self.assert_element("#edit-review-Test-link")
-        self.assert_element("#delete-review-Test-btn")
+        self.assert_element("div:contains('Test-Review-Title')")
+        self.assert_element("#edit-review-Test-Review-Title-link")
+        self.assert_element("#delete-review-Test-Review-Title-btn")
 
         #edit review
-        self.click("#edit-review-Test-link")
+        self.click("#edit-review-Test-Review-Title-link")
         self.assert_title(" Edit Review ")
         self.click("#edit-review-btn")
         self.assert_element(".alert-success")
         self.assert_element("div:contains('Successfully edited your review!')")
 
         #review populates on my profile page
-        self.assert_element("a:contains('Test')")
+        self.assert_element("a:contains('Test-Review-Title')")
 
         #navigate to user's reviews page
         self.click("a:contains('See All Reviews')")
 
         #review appears on page
-        self.assert_text("div:contains('Test')")
-        self.assert_element("#edit-review-Test-link")
-        self.assert_element("#delete-review-Test-btn")
+        self.assert_element("div:contains('Test-Review-Title')")
+        self.assert_element("#edit-review-Test-Review-Title-link")
+        self.assert_element("#delete-review-Test-Review-Title-btn")
 
         #delete review
-        self.click("#delete-review-Test-btn")
+        self.click("#delete-review-Test-Review-Title-btn")
 
         #redirected to home page with success 
         self.assert_title(" Home Page ")
@@ -117,11 +117,11 @@ class UserReviewsJourney(BaseTestCase):
 
         #review is now gone from my profile page
         self.click("#my-profile-link")
-        self.assert_element_absent("div:contains('Test')")
+        self.assert_element_absent("div:contains('Test-Review-Title')")
 
         #review is now gone from my reviews page
         self.click("a:contains('See All Reviews')")
-        self.assert_element_absent("div:contains('Test')")
+        self.assert_element_absent("div:contains('Test-Review-Title')")
 
         self.delete_account()
 

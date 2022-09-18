@@ -113,7 +113,8 @@ class GamePaginationJourney(BaseTestCase):
         #we see the next button, but not the back button, and click next
         self.assert_element("#next-btn")
         self.assert_element_absent("#back-btn")
-        self.click("#next-btn")
+        self.delete_account()
+
 
     def test_user_can_update_url_to_view_pagination_results(self):
         """
@@ -123,10 +124,10 @@ class GamePaginationJourney(BaseTestCase):
         And when I try to view beyond the search count by altering the url
         Then I am taken to an error page with a link to redirect home
         """
+        self.signup()
         self.login()
-
         #we click the animals badge link on the number one game displayed and are redirected to the top animal games search page
-        self.click('a:contains("Animals")')
+        self.open(base_url+"games/1/Animals")
         self.assert_element('h2:contains("Top Animals Games")')
         animals_page_1 = self.get_current_url()
         self.assert_equal(animals_page_1, base_url+"games/1/Animals")
