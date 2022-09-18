@@ -93,6 +93,7 @@ You can check the SeleniumBase and WebDriver docs if you need help troubleshooti
 Once you have SeleniumBase and Chromedriver installed, in the terminal, type the following commands:
 1. `cd ui_tests`
 2. `pytest` >> This command will run all UI tests in order
+   **Note: tests run headless by default; to view the tests in browser, run with `--headed`**
 3. `pytest NAME_OF_TEST_FILE.py` >> You can select which individual test file to run by entering the name of the test
    - **test_home.py** >> Runs tests for user registration, login, logout, and deleting account
    - **test_likes.py** >> Runs tests for authenticated user liking, unliking games from home page, profile page, and game details page 
