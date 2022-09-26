@@ -65,13 +65,6 @@ _This app is tested using **unittest**, **SeleniumBase**, and **pytest**. Each m
 - #### Unit tests and API tests
 **/tests and the files within it** connect to a database named `boardgames_test`. Be sure to create this database before running the tests file.
 
-Chromedriver location: /home/jess/projects/capstone-1/venv/lib/python3.8/site-packages/seleniumbase/drivers/chromedriver
-
---> include steps for downloading SeleniumBase and specific chromedriver
---> Download test commands and results as text file to include in repo
-
-Chrome location: /bin/google-chrome
-
 - #### UI Tests
 The **/ui_tests** directory holds the UI tests for the live link. Test reports documented in **dashboard.html**. 
 
